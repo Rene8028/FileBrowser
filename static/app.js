@@ -10,7 +10,8 @@ const log = (...args) => {
 
 
 /* ---------- 工具 ---------- */
-const $ = sel => document.querySelector(sel);
+const qs = sel => document.querySelector(sel);
+const qsa = sela => document.querySelectorAll(sela);
 
 function esc(p) {
   const encoded = encodeURIComponent(p);
@@ -32,7 +33,7 @@ async function api(url, opts = {}) {
 /* ---------- 盘符 ---------- */
 async function loadDrives() {
   const drives = await api(`${API}/drives`);
-  const box = $('#drive-list');
+  const box = qs('#drive-list');
   box.innerHTML = '';
   drives.forEach(d => {
     const a = document.createElement('a');
@@ -86,7 +87,7 @@ async function refreshList() {
   try {
     const url = `${API}/browse?path=${esc(currentPath)}`;
     const items = await api(url);
-    const box = $('#file-list');
+    const box = qs('#file-list');
     box.innerHTML = '';
     if (!items.length) {
       box.innerHTML = '<div class="text-center p-4 text-muted">空文件夹</div>';
@@ -120,7 +121,7 @@ async function refreshList() {
     });
     
     // 绑定事件监听器，避免内联JavaScript
-    $('#file-list').addEventListener('click', function(e) {
+    qs('#file-list').addEventListener('click', function(e) {
       // 处理文件/文件夹点击
       if (e.target.closest('.item-link')) {
         const link = e.target.closest('.item-link');
@@ -143,7 +144,7 @@ async function refreshList() {
       }
     });
     
-    $('#current-title').textContent = currentPath || '根目录';
+    qs('#current-title').textContent = currentPath || '根目录';
   } catch (e) {
     console.error('刷新列表失败', e);
   }
@@ -187,9 +188,9 @@ function formatSize(b) {
 
 /* ---------- 拖拽上传 ---------- */
 (function initUpload() {
-  const dropzone = $('#dropzone');
-  const fileInput = $('#file-input');
-  const progress = $('.progress');
+  const dropzone = qs('#dropzone');
+  const fileInput = qs('#file-input');
+  const progress = qs('.progress');
   const bar = progress.querySelector('.progress-bar');
 
   dropzone.onclick = () => fileInput.click();
