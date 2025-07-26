@@ -53,32 +53,31 @@ function renderBreadcrumb(fullPath) {
   bc.innerHTML = '';
   if (!fullPath) {
     bc.innerHTML = '<li class="breadcrumb-item active">根目录</li>';
-    return;
+  } else {
+    const parts = fullPath.split('\\');
+    let acc = '';
+    parts.forEach((p, idx) => {
+      acc += (idx === 0 ? '' : '\\') + p;
+      const li = document.createElement('li');
+      li.className = 'breadcrumb-item';
+      const text = idx === parts.length - 1 ? p : (p || parts[0]);
+      if (idx === parts.length - 1) {
+        li.classList.add('active');
+        li.textContent = text;
+      } else {
+        const a = document.createElement('a');
+        a.href = '#';
+        a.textContent = text;
+        (currentliPath => {
+          a.onclick = () => changeDir(currentliPath);
+        })(acc);
+        li.appendChild(a);
+      }
+      bc.appendChild(li);
+    });
   }
-  const parts = fullPath.split('\\');
-  let acc = '';
-  parts.forEach((p, idx) => {
-    acc += (idx === 0 ? '' : '\\') + p;
-    const li = document.createElement('li');
-    li.className = 'breadcrumb-item';
-    const text = idx === parts.length - 1 ? p : (p || parts[0]);
-    if (idx === parts.length - 1) {
-      li.classList.add('active');
-      li.textContent = text;
-    } else {
-      const a = document.createElement('a');
-      a.href = '#';
-      a.textContent = text;
-      // 使用立即执行函数创建独立作用域
-      (currentliPath => {
-        a.onclick = () => {
-          changeDir(currentliPath);
-        };
-      })(acc);
-      li.appendChild(a);
-    }
-    bc.appendChild(li);
-  });
+  const backBtnWrapper = document.getElementById('back-btn-wrapper');
+  backBtnWrapper.style.display = fullPath ? '' : 'none';
 }
 
 /* ---------- 文件列表 ---------- */
@@ -125,11 +124,31 @@ async function refreshList() {
   }
 }
 
-/* ---------- 功能 ---------- */
+/* ---------- 目录功能 ---------- */
 function changeDir(path) {
-  currentPath = path;   // 原样保存
+  currentPath = path;
   renderBreadcrumb(currentPath);
   refreshList();
+}
+
+function goBack() {
+  if (!currentPath) return;
+  const idx = currentPath.lastIndexOf('\\');
+  if (idx === currentPath.length - 1) {
+    const trimmed = currentPath.slice(0, -1);
+    const idx2 = trimmed.lastIndexOf('\\');
+    if (idx2 === -1) {
+      changeDir('');
+    }
+    return;
+  }
+  if (idx === -1) {
+    changeDir('');
+  } else {
+    const parent = currentPath.substring(0, idx);
+    const fixedParent = /^\w:$/.test(parent) ? parent + '\\' : parent;
+    changeDir(fixedParent || '');
+  }
 }
 
 function handleItem(path, isDir) {

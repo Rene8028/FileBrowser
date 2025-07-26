@@ -67,9 +67,16 @@
       <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
           <strong id="current-title">加载中...</strong>
-          <button class="btn btn-sm btn-outline-primary" onclick="refreshList()">
-            <i class="fa fa-sync-alt"></i> 刷新
-          </button>
+          <div>
+            <span id="back-btn-wrapper" style="display:none;">
+              <button class="btn btn-sm btn-outline-secondary me-2" onclick="goBack()" title="返回上一级">
+                <i class="fa fa-arrow-left"></i> 后退
+              </button>
+            </span>
+            <button class="btn btn-sm btn-outline-primary" onclick="refreshList()">
+              <i class="fa fa-sync-alt"></i> 刷新
+            </button>
+          </div>
         </div>
         <div class="list-group list-group-flush" id="file-list">
           <div class="text-center p-4 text-muted">加载中...</div>

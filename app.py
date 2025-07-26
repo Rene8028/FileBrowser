@@ -27,7 +27,6 @@ def safe_join(base: str, *paths: str) -> Path:
     return final
 
 
-# 1. 让根路径 / 自动返回 static/index.html
 @app.route('/')
 def root():
     return send_from_directory(app.static_folder, 'index.html')
@@ -70,7 +69,6 @@ def api_browse():
     else:
         abort(400, description="不是目录")
     return jsonify(items)
-
 
 @app.route("/api/upload", methods=["POST"])
 def api_upload():
