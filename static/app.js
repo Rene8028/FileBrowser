@@ -30,6 +30,32 @@ async function api(url, opts = {}) {
   }
 }
 
+function formatSize(b) {
+  return b < 1024
+    ? b + ' B'
+    : b < 1024 ** 2
+    ? (b / 1024).toFixed(2) + ' KB'
+    : b < 1024 ** 3
+    ? (b / 1024 ** 2).toFixed(2) + ' MB'
+    : b < 1024 ** 4
+    ? (b / 1024 ** 3).toFixed(2) + ' GB'
+    : (b / 1024 ** 4).toFixed(2) + ' TB';
+}
+
+function formatTime(ts) {
+  if (!ts) return '';
+  const date = new Date(ts * 1000);
+  return date.toLocaleString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  }).replace(/\//g, '-');
+}
+
 /* ---------- 盘符 ---------- */
 async function loadDrives() {
   const drives = await api(`${API}/drives`);
@@ -102,18 +128,23 @@ async function refreshList() {
         <div>
           <i class="fa ${icon} me-2"></i>
           <a href="#" class="item-link" data-path="${it.path}" data-isdir="${JSON.stringify(it.isDir)}">
-            ${it.name} ${size}
+            ${it.name}
           </a>
         </div>
-        ${!it.isDir ? `
-          <div>
-            <button class="btn btn-sm btn-outline-success download-btn" data-path="${it.path}">
-              <i class="fa fa-download"></i>
-            </button>
-            <button class="btn btn-sm btn-outline-danger delete-btn" data-path="${it.path}">
-              <i class="fa fa-trash"></i>
-            </button>
-          </div>` : ''}
+        <div class="d-flex align-items-center" style="min-width:260px;">
+          ${!it.isDir ? `<span class="me-3 text-muted" style="width:100px;text-align:right;">${formatSize(it.size)}</span>` : `<span class="me-3" style="width:100px;"></span>`}
+          <span class="me-3 text-muted" style="width:160px;text-align:left;">${formatTime(it.mtime)}</span>
+          <div style="width:85px;">
+            ${!it.isDir ? `
+              <button class="btn btn-sm btn-outline-success download-btn me-1" data-path="${it.path}">
+                <i class="fa fa-download"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger delete-btn" data-path="${it.path}">
+                <i class="fa fa-trash"></i>
+              </button>
+            ` : ''}
+          </div>
+        </div>
       `;
       box.appendChild(row);
     });
@@ -171,12 +202,6 @@ async function deleteItem(path) {
   } catch (e) {
     console.error('删除失败', e);
   }
-}
-
-function formatSize(b) {
-  return b < 1024 ? b + ' B' :
-         b < 1024 ** 2 ? (b / 1024).toFixed(1) + ' KB' :
-         (b / 1024 ** 2).toFixed(1) + ' MB';
 }
 
 /* ---------- 拖拽上传 ---------- */
