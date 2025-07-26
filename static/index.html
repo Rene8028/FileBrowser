@@ -1,0 +1,84 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+  <title>文件浏览器</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body { background:#f8f9fa; }
+    .breadcrumb-item a { text-decoration:none; }
+    .dropzone {
+      border:2px dashed #0d6efd;
+      border-radius:.5rem;
+      padding:2rem;
+      text-align:center;
+      transition:.3s;
+      cursor:pointer;
+    }
+    .dropzone.dragover {
+      background:#e7f1ff;
+      border-color:#0a58ca;
+    }
+    .progress { height:6px; display:none; }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-dark bg-primary">
+  <div class="container-fluid">
+    <span class="navbar-brand mb-0 h1"><i class="fa fa-folder-open"></i> 文件浏览器</span>
+  </div>
+</nav>
+
+<div class="container-fluid mt-3">
+  <div class="row">
+    <!-- 盘符侧边栏 -->
+    <div class="col-md-2">
+      <div class="card">
+        <div class="card-header">盘符</div>
+        <div class="list-group list-group-flush" id="drive-list"></div>
+      </div>
+    </div>
+
+    <!-- 主区域 -->
+    <div class="col-md-10">
+      <!-- 面包屑 -->
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb" id="breadcrumb"></ol>
+      </nav>
+
+      <!-- 上传区域 -->
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="dropzone" id="dropzone">
+            <i class="fa fa-cloud-upload-alt fa-2x text-primary"></i><br>
+            拖拽文件到此处或 <strong>点击选择</strong>
+            <input type="file" id="file-input" multiple class="d-none">
+          </div>
+          <div class="progress mt-2">
+            <div class="progress-bar" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 文件列表 -->
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <strong id="current-title">加载中...</strong>
+          <button class="btn btn-sm btn-outline-primary" onclick="refreshList()">
+            <i class="fa fa-sync-alt"></i> 刷新
+          </button>
+        </div>
+        <div class="list-group list-group-flush" id="file-list">
+          <div class="text-center p-4 text-muted">加载中...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>
