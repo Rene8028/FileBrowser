@@ -120,30 +120,6 @@ async function refreshList() {
       box.appendChild(row);
     });
     
-    // 绑定事件监听器，避免内联JavaScript
-    qs('#file-list').addEventListener('click', function(e) {
-      // 处理文件/文件夹点击
-      if (e.target.closest('.item-link')) {
-        const link = e.target.closest('.item-link');
-        handleItem(link.dataset.path, link.dataset.isdir);
-        e.preventDefault();
-      }
-      
-      // 处理下载按钮
-      if (e.target.closest('.download-btn')) {
-        const btn = e.target.closest('.download-btn');
-        downloadFile(btn.dataset.path);
-        e.preventDefault();
-      }
-      
-      // 处理删除按钮
-      if (e.target.closest('.delete-btn')) {
-        const btn = e.target.closest('.delete-btn');
-        deleteItem(btn.dataset.path);
-        e.preventDefault();
-      }
-    });
-    
     qs('#current-title').textContent = currentPath || '根目录';
   } catch (e) {
     console.error('刷新列表失败', e);
@@ -215,6 +191,32 @@ function formatSize(b) {
       progress.style.display = 'none';
     }
   }
+})();
+
+/* ---------- 事件监听器注册 ---------- */
+(function initEventListeners() {
+  qs('#file-list').addEventListener('click', function(e) {
+    // 处理文件/文件夹点击
+    if (e.target.closest('.item-link')) {
+      const link = e.target.closest('.item-link');
+      handleItem(link.dataset.path, link.dataset.isdir);
+      e.preventDefault();
+    }
+    
+    // 处理下载按钮
+    if (e.target.closest('.download-btn')) {
+      const btn = e.target.closest('.download-btn');
+      downloadFile(btn.dataset.path);
+      e.preventDefault();
+    }
+    
+    // 处理删除按钮
+    if (e.target.closest('.delete-btn')) {
+      const btn = e.target.closest('.delete-btn');
+      deleteItem(btn.dataset.path);
+      e.preventDefault();
+    }
+  });
 })();
 
 /* ---------- 启动 ---------- */
