@@ -72,7 +72,6 @@ function renderBreadcrumb(fullPath) {
       // 使用立即执行函数创建独立作用域
       (currentliPath => {
         a.onclick = () => {
-          log('点击', currentliPath);
           changeDir(currentliPath);
         };
       })(acc);
@@ -103,7 +102,7 @@ async function refreshList() {
       row.innerHTML = `
         <div>
           <i class="fa ${icon} me-2"></i>
-          <a href="#" class="item-link" data-path="${it.path}" data-isdir="${it.isDir}">
+          <a href="#" class="item-link" data-path="${it.path}" data-isdir="${JSON.stringify(it.isDir)}">
             ${it.name} ${size}
           </a>
         </div>
@@ -131,7 +130,6 @@ function changeDir(path) {
   currentPath = path;   // 原样保存
   renderBreadcrumb(currentPath);
   refreshList();
-  log('切换目录:', currentPath);
 }
 
 function handleItem(path, isDir) {
@@ -199,7 +197,7 @@ function formatSize(b) {
     // 处理文件/文件夹点击
     if (e.target.closest('.item-link')) {
       const link = e.target.closest('.item-link');
-      handleItem(link.dataset.path, link.dataset.isdir);
+      handleItem(link.dataset.path, JSON.parse(link.dataset.isdir));
       e.preventDefault();
     }
     
